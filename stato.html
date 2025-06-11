@@ -7,6 +7,7 @@
 <body>
   <h1>Verifica avanzamento blocco</h1>
   <p id="messaggio">Caricamento...</p>
+  <button id="playVoice" style="font-size:1.2em; padding:10px;">Ascolta avanzamento</button>
 
   <script>
     async function main() {
@@ -16,7 +17,6 @@
       if (!blocco) {
         const msg = "Nessun blocco specificato.";
         document.getElementById("messaggio").textContent = msg;
-        speak(msg);
         return;
       }
 
@@ -37,12 +37,25 @@
         }
 
         document.getElementById("messaggio").textContent = messaggio;
-        speak(messaggio);
+
+        // Prepara il messaggio per la sintesi vocale, ma non lo riproduce ancora
+        window.utter = new SpeechSynthesisUtterance(messaggio);
+        window.utter.lang = "it-IT";
 
       } catch (error) {
         const msg = "Errore durante la richiesta.";
         document.getElementById("messaggio").textContent = msg;
         console.error(error);
-        speak(msg);
       }
     }
+
+    document.getElementById("playVoice").addEventListener("click", () => {
+      if (window.utter) {
+        window.speechSynthesis.speak(window.utter);
+      }
+    });
+
+    main();
+  </script>
+</body>
+</html>
