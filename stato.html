@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>Avanzamento Blocco</title>
 </head>
 <body>
@@ -14,7 +14,9 @@
       const blocco = params.get('blocco');
 
       if (!blocco) {
-        document.getElementById("messaggio").textContent = "Nessun blocco specificato.";
+        const msg = "Nessun blocco specificato.";
+        document.getElementById("messaggio").textContent = msg;
+        speak(msg);
         return;
       }
 
@@ -25,27 +27,22 @@
           body: JSON.stringify({ blocco: blocco })
         });
 
-        const data = await response.json();
+        let messaggio;
 
-        let messaggio = data.messaggio || "Risposta non valida";
-
-        if (!response.ok) {
+        if (response.ok) {
+          const data = await response.json();
+          messaggio = data.messaggio || "Risposta non valida";
+        } else {
           messaggio = "Blocco non trovato.";
         }
 
         document.getElementById("messaggio").textContent = messaggio;
+        speak(messaggio);
 
-        const synth = window.speechSynthesis;
-        const utter = new SpeechSynthesisUtterance(messaggio);
-        utter.lang = "it-IT";
-        synth.speak(utter);
       } catch (error) {
-        document.getElementById("messaggio").textContent = "Errore durante la richiesta.";
+        const msg = "Errore durante la richiesta.";
+        document.getElementById("messaggio").textContent = msg;
         console.error(error);
+        speak(msg);
       }
     }
-
-    main();
-  </script>
-</body>
-</html>
